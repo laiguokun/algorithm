@@ -1,0 +1,33 @@
+void ins(int a,int b,int c)
+{
+        tot++;
+        pre[tot]=last[a];last[a]=tot;
+        g[tot].a=b;g[tot].b=c;
+        tot++;
+        pre[tot]=last[b];last[b]=tot;
+        g[tot].a=a;g[tot].b=0;
+}
+int dfs(int x,int flow)
+{
+        if (x==t)
+        return flow;
+        int res=0;
+        int k=last[x];
+        while (k!=0)
+        {
+                if ((h[x]==h[g[k].a]+1)&&(g[k].b>0))
+                {
+                        int tmp=dfs(g[k].a,min(flow-res,g[k].b));
+                        res+=tmp;
+                        g[k].b-=tmp;
+                        if ((k&1)==0) g[k-1].b+=tmp; else g[k+1].b+=tmp;
+                        if (res==flow) return flow;
+                }
+                k=pre[k];
+        }
+        if (h[s]==t) return res;
+        vh[h[x]]--;
+        if (vh[h[x]]==0) h[s]=t;
+        vh[++h[x]]++;
+        return res;
+}

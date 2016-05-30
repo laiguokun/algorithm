@@ -1,0 +1,61 @@
+Procedure CreateSuffixArray;
+var i,K:Tindex;
+Begin
+  For i:=1 to N do inc(num[ord(S[i])]);
+  For i:=1 to 256 do last[i]:=last[i-1]+num[i];
+  For i:=N downto 1 do
+    Begin
+      now[last[ord(S[i])]]:=i;
+      dec(last[ord(S[i])]);
+    End;
+  For i:=1 to N do
+    if S[now[i]]=S[now[i-1]] then
+      R[now[i]]:=R[now[i-1]] else R[now[i]]:=R[now[i-1]]+1;
+  Rank:=R; SA:=now;
+  K:=1;
+  While K<N do
+    Begin
+      For i:=1 to N do last[Rank[SA[i]]]:=i;
+      For i:=N downto 1 do
+        if SA[i]>K then
+          Begin
+            now[last[Rank[SA[i]-K]]]:=SA[i]-K;
+            dec(last[Rank[SA[i]-K]]);
+          End;
+      For i:=N-K+1 to N do
+        Begin
+           now[last[Rank[i]]]:=i;
+           dec(last[Rank[i]]);
+        End;
+      For i:=1 to N do
+        Begin
+          if (Rank[now[i]]=Rank[now[i-1]])and
+             (Rank[now[i]+K]=Rank[now[i-1]+K]) then
+            R[now[i]]:=R[now[i-1]]
+           else R[now[i]]:=R[now[i-1]]+1;
+        End;
+      Rank:=R; SA:=now;
+      K:=K shl 1;
+    End;
+End;
+
+Procedure CalculateHeight;
+var i,j,K:Tindex;
+Begin
+  K:=0;
+  For i:=1 to N do
+    Begin
+      if Rank[i]=1 then
+        Begin
+          H[i]:=0;
+          k:=0;
+          continue;
+         End;
+      j:=SA[Rank[i]-1];
+      while S[i+K]=S[j+K] do inc(K);
+      H[i]:=K;
+      if K>0 then dec(K);
+    End;
+  For i:=1 to N do
+    Height[Rank[i]]:=H[i];
+End;

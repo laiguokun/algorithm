@@ -1,0 +1,20 @@
+Procedure Build_Gragh;
+var i,h,t,u:Longint;
+Begin
+  Suffix[1]:=1; h:=0; t:=0;
+  For i:=1 to 4 do
+    if Child[1][i]=0 then Child[1][i]:=1 Else
+      Begin
+        Inc(t); Que[t]:=Child[1][i]; Suffix[Child[1][i]]:=1;
+      End; 
+  Repeat
+    Inc(h); u:=Que[h];
+    Danger[u]:=Danger[u] or Danger[Suffix[u]];
+    For i:=1 to 4 do
+      if Child[u][i]=0 then Child[u][i]:=Child[Suffix[u]][i] Else
+      Begin
+        Suffix[Child[u][i]]:=Child[Suffix[u]][i];
+        Inc(t); Que[t]:=Child[u][i];
+      End;
+  Until h=t;
+End;

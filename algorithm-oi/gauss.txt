@@ -1,0 +1,25 @@
+for i:=1 to n-1 do{需要消元n-1次}
+  begin
+    for j:=i to n do{寻找主元，即当前要消去元素系数最大的一个式子}
+      if matrix[j,i]>matrix[i,i] then
+        begin
+          temp:=matrix[i];
+          matrix[i]:=matrix[j];
+          matrix[j]:=temp;
+        end;
+    for j:=i+1 to n do
+      begin
+        m:=matrix[j,i]/matrix[i,i];
+        matrix[j,i]:=0;
+        for k:=i+1 to n+1 do
+          matrix[j,k]:=matrix[i,k]*m-matrix[j,k];
+      end;
+  end;
+x[n]:=matrix[n,n+1]/matrix[n,n];{回代过程}
+for i:=n-1 downto 1 do
+  begin
+    m:=0;
+    for j:=i+1 to n do
+      m:=m+matrix[i,j]*x[j];
+    x[i]:=(matrix[i,n+1]-m)/matrix[i,i];
+  end;

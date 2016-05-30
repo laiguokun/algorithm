@@ -1,0 +1,80 @@
+void insmark(int x,int k)
+{
+        if (x==0) return;
+        mark[x]=true;f[x]+=k;
+}
+void update(int x)
+{
+        if (mark[x])
+        {
+                cost[x]=cost[x]+f[x];
+                insmark(tree[x][0],f[x]);
+                insmark(tree[x][1],f[x]);
+                mark[x]=false;f[x]=0;
+        }
+}
+void rotate(int& x,int k)
+{
+        update(x);
+        update(tree[x][k]);
+        int y=tree[x][k];tree[x][k]=tree[y][k^1];tree[y][k^1]=x;
+        v[y]=v[x];v[x]=v[tree[x][0]]+v[tree[x][1]]+1;
+        x=y;
+}
+void ins(int& x,int k)
+{
+        if (x==0)
+        {
+                tot++;
+                p[tot]=rand();
+                cost[tot]=k;
+                v[tot]=1;
+                mark[tot]=false;
+                f[tot]=0;
+                x=tot;
+                return;
+        }
+        v[x]++;
+        update(x);
+        if (cost[x]>k)
+        {
+                ins(tree[x][0],k);
+                if (p[tree[x][0]]>p[x]) rotate(x,0);
+        }
+        else
+        {
+                ins(tree[x][1],k);
+                if (p[tree[x][1]]>p[x]) rotate(x,1);
+        }
+}
+void del(int& x,int k)
+{
+        v[x]--;
+        if (k>cost[x]){del(tree[x][1],k);return;}
+        if (k<cost[x]){del(tree[x][0],k);return;}
+        if ((tree[x][0]==0)&&(tree[x][1]==0))
+        {
+                x=0;
+                return;
+        }
+        else
+        {
+                if (p[tree[x][0]]>p[tree[x][1]])
+                {
+                        rotate(x,0);
+                        del(tree[x][1],k);
+                }
+                else
+                {
+                        rotate(x,1);
+                        del(tree[x][0],k);
+                }
+        }
+}
+int find(int x,int k)
+{
+        update(x);
+        if ((v[tree[x][0]]+1)==k) return x;
+        if (v[tree[x][0]]<k) return find(tree[x][1],k-1-v[tree[x][0]]);
+        else return find(tree[x][0],k);
+}       

@@ -1,0 +1,32 @@
+function getmin(a,b:longint):longint;
+begin
+  if a<b then exit(a) else exit(b);
+end;
+procedure dfs(x,father,deep:longint);
+var k,q,tot:longint;
+begin
+  ck[x]:=1;
+  depth[x]:=deep;
+  k:=first[x];
+  tot:=0;
+  while k<>0 do
+  begin
+    q:=b[k];
+    if q<>father then
+    begin
+      if ck[q]=1 then an[x]:=getmin(an[x],depth[q]);
+      if ck[q]=0 then
+      begin
+        inc(tot);
+        dfs(q,x,deep+1);
+        an[x]:=getmin(an[x],an[q]);
+        if an[q]<depth[x] then qiao[k]:=true;
+        if an[q]<=depth[x] then cut[x]:=true;
+        if (x=1)and(tot>1) then cut[x]:=true;
+      end;
+    end;
+    k:=next[k];
+  end;
+  ck[x]:=2;
+end;
+

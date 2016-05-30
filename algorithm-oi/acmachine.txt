@@ -1,0 +1,39 @@
+    void ins(char a)
+    {
+        int x=(int)a-anum;
+        if (trie[now][x]==0)
+        {
+        	tot++;
+                trie[now][x]=tot;
+                now=tot;
+        }
+        else now=trie[now][x];
+    }
+    void bulid()
+    {
+    	int head=1,tail=0;
+        for (int i=0;i<26;i++)
+        {
+        	if (trie[1][i]!=0)
+                {
+                	q[++tail]=trie[1][i];
+                        fail[trie[1][i]]=1;
+                }
+                else trie[1][i]=1;
+        }
+        while (head<=tail)
+        {
+        	int x=q[head];
+          	danger[x]=danger[fail[x]]||danger[x];
+                for (int i=0;i<26;i++)
+                {
+                	if (trie[x][i]!=0)
+                        {
+                        	q[++tail]=trie[x][i];
+                                fail[trie[x][i]]=trie[fail[x]][i];
+                        }
+                        else trie[x][i]=trie[fail[x]][i];
+                }
+                head++;
+        }
+    }

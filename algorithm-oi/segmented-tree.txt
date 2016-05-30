@@ -1,0 +1,38 @@
+int max(int x,int y) {if (x>y) return x;else return y;}
+int min(int x,int y) {if (x<y) return x;else return y;}
+void insmark(int x,int k)
+{
+        tree[x]+=k;mark[x]=true;f[x]+=k;
+}       
+void update(int x)
+{
+        if (mark[x])
+        {
+               // tree[x]+=f[x];
+                insmark(x*2,f[x]);
+                insmark(x*2+1,f[x]);
+                mark[x]=false;f[x]=0;
+        }
+}       
+void insert(int l,int r,int x,int a,int b,int c)
+{
+        if ((l>r)||(r<a)||(l>b)) return;
+        update(x);
+        if ((l>=a)&&(r<=b))
+        {
+               // tree[x]+=c;
+                insmark(x,c);
+                return;
+        }
+        int mid=(l+r)/2;
+        insert(l,mid,x*2,a,b,c);insert(mid+1,r,x*2+1,a,b,c);
+        tree[x]=max(tree[x*2],tree[x*2+1]);
+}
+int ask(int l,int r,int x,int a,int b)
+{
+        if ((l>r)||(r<a)||(l>b)) return -maxint;
+        update(x);
+        if ((l>=a)&&(r<=b)) return tree[x];
+        int mid=(l+r)/2;
+        return max(ask(l,mid,x*2,a,b),ask(mid+1,r,x*2+1,a,b));
+}          

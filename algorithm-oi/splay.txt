@@ -1,0 +1,134 @@
+{problem edit}
+{$m 100000000}
+var e,ans:array[0..10000000]of char;
+fa,s:array[0..10000000]of longint;
+c:array[0..10000000,0..1]of longint;
+i,j,n,tot,root,head,len,u,v,shu:longint;
+ch:char;
+function getmin(a,b:longint):longint;
+begin
+  if a<b then getmin:=a else getmin:=b;
+end;
+procedure new(x,father,l,r:longint;ch:char);
+begin
+  e[x]:=ch;fa[x]:=father;
+  c[x,0]:=l;c[x,1]:=r;
+end;
+procedure up(x:longint);
+begin
+  s[x]:=s[c[x,0]]+s[c[x,1]]+1;
+end;
+function find(x,k:longint):longint;
+begin
+  while s[c[x,0]]+1<>k do
+  begin
+    if s[c[x,0]]+1>k then x:=c[x,0]
+    else
+    begin
+      k:=k-s[c[x,0]]-1;
+      x:=c[x,1];
+    end;
+  end;
+  find:=x;
+end;
+procedure rotate(var root:longint;x:longint);
+var y,z,p,q:longint;
+begin
+  y:=fa[x];z:=fa[y];
+  if c[y,0]=x then p:=0 else p:=1;
+  q:=p xor 1;
+  if y=root then root:=x
+  else
+    if c[z,0]=y then c[z,0]:=x
+    else c[z,1]:=x;
+  fa[x]:=z;fa[y]:=x;fa[c[x,q]]:=y;
+  c[y,p]:=c[x,q];c[x,q]:=y;
+  up(y);up(x);
+end;
+procedure splay(var root:longint;x:longint);
+var y,z:longint;
+begin
+  while x<>root do
+  begin
+    y:=fa[x];z:=fa[y];
+    if y<>root then
+      if (c[y,0]=x)xor(c[z,0]=y) then rotate(root,x)
+      else rotate(root,y);
+    rotate(root,x);
+  end;
+end;
+procedure insert;
+var i,j,t,len:longint;
+ch:char;
+begin
+  for i:=1 to 6 do read(ch);
+  readln(len);
+  t:=0;
+  for i:=1 to len do
+  begin
+    read(ch);
+    while (ord(ch)<32)or(ord(ch)>126) do read(ch);
+    inc(tot);
+    new(tot,0,t,0,ch);
+    if t>0 then fa[t]:=tot;
+    t:=tot;
+    s[tot]:=i;
+  end;
+  u:=find(root,head);v:=find(root,head+1);
+  splay(root,u);splay(c[u,1],v);
+  c[v,0]:=t;fa[t]:=v;
+  up(v);up(u);
+  readln;
+end;
+procedure delete;
+var i,len:longint;
+ch:char;
+begin
+  for i:=1 to 6 do read(ch);
+  readln(len);
+  u:=find(root,head);
+  v:=find(root,getmin(head+len+1,s[root]));
+  splay(root,u);splay(c[u,1],v);
+  c[v,0]:=0;up(v);up(u);
+end;
+procedure print(x:longint);
+begin
+  if c[x,0]<>0 then print(c[x,0]);
+  write(e[x]);
+  if c[x,1]<>0 then print(c[x,1]);
+end;
+procedure get;
+var i,len:longint;
+ch:char;
+begin
+  for i:=1 to 3 do read(ch);
+  readln(len);
+  u:=find(root,head);v:=find(root,getmin(head+len+1,s[root]));
+  splay(root,u);splay(c[u,1],v);
+  print(c[v,0]);
+  writeln;
+end;
+begin
+  assign(input,'editor.in');reset(input);
+  assign(output,'editor.out');rewrite(output);
+  readln(n);
+  tot:=2;root:=1;head:=1;
+  new(1,0,0,2,' ');s[1]:=2;
+  new(2,1,0,0,' ');s[2]:=1;
+  for i:=1 to n do
+  begin
+    read(ch);
+    if ch='I' then insert;
+    if ch='P' then begin readln;dec(head);end;
+    if ch='N' then begin readln;inc(head);end;
+    if ch='M' then
+    begin
+      for j:=1 to 4 do read(ch);
+      readln(shu);
+      head:=shu+1;
+    end;
+    if ch='D' then delete;
+    if ch='G' then get;
+  end;
+  close(input);close(output);
+end.

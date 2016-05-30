@@ -1,0 +1,32 @@
+procedure kmp;
+begin
+  p[1]:=0;
+  j:=0;
+  for i:=2 to len do
+  begin
+    while (j>0)and(ch[j+1]<>ch[i]) do j:=p[j];
+    if ch[j+1]=ch[i] then inc(j);
+    p[i]:=j;
+  end;
+end;
+
+
+
+procedure extend_kmp;
+begin
+  j:=0;
+  while ch[2+j]=ch[1+j] do inc(j);
+  a[2]:=j;
+  k:=2;
+  for i:=3 to len do
+  begin
+    l:=a[k]+k-1;ll:=a[i-k+1];
+    if ll<l-i+1 then a[i]:=ll
+    else
+    begin 
+      j:=getmax(0,l-i+1);
+      while ch[1+j]=ch[i+j] then inc(j);
+      a[i]:=j;k:=i;
+    end;
+  end;
+end;

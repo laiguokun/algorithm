@@ -1,0 +1,48 @@
+function find(x:longint):boolean;
+var i:longint;
+o:boolean;
+begin
+  o:=false;
+  xck[x]:=true;
+  for i:=1 to x2[0] do
+  begin
+    if not(yck[i])and(l[x]+r[i]>g[x,i]) then slack[i]:=getmin(slack[i],l[x]+r[i]-g[x,i]);
+    if not(yck[i])and(l[x]+r[i]=g[x,i])and(not(o)) then
+    begin
+      yck[i]:=true;
+      if (line[i]=0) or (find(line[i])) then
+      begin
+        line[i]:=x;
+        exit(true);
+      end;
+    end;
+  end;
+ exit(false);
+end;
+procedure km;
+var i,j,min,i1,j1:longint;
+begin
+  fillchar(r,sizeof(r),0);
+  for i:=1 to x1[0] do l[i]:=-10000000;
+  for i:=1 to x1[0] do
+    for j:=1 to x2[0] do
+      l[i]:=max(l[i],g[i,j]);
+  for i:=1 to x1[0] do
+  begin
+    fillchar(slack,sizeof(slack),$7f);
+    repeat
+      fillchar(xck,sizeof(xck),false);
+      fillchar(yck,sizeof(yck),false);
+      if find(i) then break;
+      min:=maxlongint;
+      for i1:=1 to x2[0] do
+        if not(yck[i1]) then min:=getmin(min,slack[i1]);
+      for i1:=1 to x1[0] do
+        if xck[i1] then dec(l[i1],min);
+      for i1:=1 to x2[0] do
+        if yck[i1] then inc(r[i1],min);
+      for i1:=1 to x2[0] do
+        if not(yck[i1]) then dec(slack[i1],min);
+    until 1=0;
+  end;
+end;

@@ -1,0 +1,29 @@
+function getmin(a,b:longint):longint;
+begin
+  if a<b then exit(a) else exit(b);
+end;
+function dfs(x,flow:longint):longint;
+var q,k,tmp:longint;
+begin
+  if x=t then exit(flow);
+  dfs:=0;
+  k:=first[x];
+  while k<>0 do
+  begin
+    q:=b[k];
+    if (h[q]+1=h[x])and(g[k]>0) then
+    begin
+      tmp:=dfs(q,getmin(flow-dfs,g[k]));
+      if odd(k) then inc(g[k+1],tmp) else inc(g[k-1],tmp);
+      dec(g[k],tmp);
+      dfs:=dfs+tmp;
+      if dfs=flow then exit;
+    end;
+    k:=next[k];
+  end;
+  if h[s]>=t then exit;
+  dec(vh[h[x]]);
+  if vh[h[x]]=0 then h[s]:=t;
+  inc(h[x]);
+  inc(vh[h[x]]);
+end; 

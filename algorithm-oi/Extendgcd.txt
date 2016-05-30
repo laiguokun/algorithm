@@ -1,0 +1,20 @@
+Var N,M,K,x,y:longint;
+
+function gcd(a,b:longint; var x,y:longint):longint;
+var x1,y1:longint;
+begin
+  if a mod b=0 then 
+    begin
+      x:=0; y:=1; exit(b);
+    end;
+  gcd:=gcd(b,a mod b,x1,y1);
+  x:=y1;
+  y:=x1-(a div b)*y1;
+end;
+
+begin
+  Readln(N,M);
+  K:=gcd(N,-m,x,y);
+  x:=(x*K mod M+M) mod M;
+  Writeln(x);
+end;

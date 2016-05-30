@@ -1,0 +1,21 @@
+function find(x:longint):boolean;
+var i:longint;
+begin
+  for i:=1 to b do
+    if (ck[i])and(g[x,i]) then
+    begin
+      ck[i]:=false;
+      t:=match[i];
+      match[i]:=x;
+      if (t=0)and(find(t)) then exit(true);
+      match[i]:=t;
+    end;
+  find:=false;
+end;
+begin
+  for i:=1 to a do
+  begin
+    fillchar(ck,sizeof(ck),true);
+    if find(i) then inc(ans);
+  end;
+end.

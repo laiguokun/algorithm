@@ -1,0 +1,28 @@
+procedure dij;
+var i,j,min,x,k:longint;
+begin
+  fillchar(dist,sizeof(dist),$7f);
+  fillchar(ff,sizeof(ff),true);
+  dist[0]:=0;
+  for i:=1 to n do
+  begin
+    min:=maxlongint;
+    for j:=0 to n-1 do
+      if (ff[j])and(dist[j]<min) then
+      begin
+        min:=dist[j];
+        x:=j;
+      end;
+    ff[x]:=false;
+    k:=first[x];
+    while k<>0 do
+    begin
+      if ff[b[k]] then
+      begin
+        if dist[x]+cost[k]<dist[b[k]] then
+          dist[b[k]]:=dist[x]+cost[k];
+      end;
+      k:=next[k];
+    end;
+  end;
+end;

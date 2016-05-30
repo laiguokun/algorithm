@@ -1,0 +1,56 @@
+var x,y:array[0..100000]of real;
+xyuan,yyuan,r,t:real;
+i,j,k,a,b,c,n,x1,y1:longint;
+function inside(k:longint):boolean;
+begin
+  if sqrt(sqr(x[k]-xyuan)+sqr(y[k]-yyuan))<=r then exit(true)
+  else exit(false);
+end;
+procedure yuan2(x2,y2,x3,y3:real);
+begin
+  xyuan:=(x2+x3)/2;
+  yyuan:=(y2+y3)/2;
+  r:=sqrt(sqr(xyuan-x2)+sqr(yyuan-y2));
+end;
+procedure yuan;
+var x2,x3,y2,y3,x1,y1:real;
+a1,b1,c1,d1,e1,f1:real;
+begin
+  if c=0 then begin yuan2(x[a],y[a],x[b],y[b]);exit;end;
+  x1:=x[a];y1:=y[a];x2:=x[b];y2:=y[b];x3:=x[c];y3:=y[c];
+  a1:=2*(x2-x1);
+  b1:=2*(y2-y1);
+  c1:=x2*x2+y2*y2-x1*x1-y1*y1;
+  d1:=2*(x3-x2);
+  e1:=2*(y3-y2);
+  f1:=x3*x3+y3*y3-x2*x2-y2*y2;
+  xyuan:=(b1*f1-e1*c1)/(b1*d1-e1*a1);
+  yyuan:=(d1*c1-a1*f1)/(b1*d1-e1*a1);
+  r:=sqrt(sqr(xyuan-x1)+sqr(yyuan-y1));
+end;
+begin
+  read(n);
+  for i:=1 to n do read(x[i],y[i]);
+  a:=1;b:=2;c:=0;
+  yuan;
+  for i:=3 to n do
+    if not(inside(i)) then
+    begin
+      a:=i;b:=1;c:=0;
+      yuan;
+      for j:=2 to i-1 do
+        if not(inside(j)) then
+        begin
+          b:=j;c:=0;
+          yuan;
+          for k:=1 to j-1 do
+          if not(inside(k)) then
+          begin
+            c:=k;
+            yuan;
+          end;
+        end;
+    end;
+  writeln(r:0:10);
+  writeln(xyuan:0:10,' ',yyuan:0:10);
+end.
